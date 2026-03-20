@@ -106,14 +106,9 @@ export default function Home() {
               </defs>
             </svg>
           </div>
-          <h1 className="home-title">AnonChat</h1>
-          <p className="home-subtitle">Private. Ephemeral. Just you and one stranger.</p>
-          {!serverOnline && (
-            <div className="server-warn">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-              Server offline — start the backend first
-            </div>
-          )}
+          <h1 className="home-title">Anonymous Chat</h1>
+          <p className="home-subtitle">Share the code!! and STARTT</p>
+          {!serverOnline && (<h1></h1>)}
         </div>
 
         <div className="section">
