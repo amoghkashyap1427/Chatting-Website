@@ -1,7 +1,7 @@
 // socket.js – Singleton socket connection shared across pages
 import { io } from 'socket.io-client'
 
-const SERVER_URL = 'http://localhost:3001'
+const SERVER_URL = 'https://anonchat-server-je7v.onrender.com'
 
 let socket = null
 
