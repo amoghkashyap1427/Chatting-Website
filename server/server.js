@@ -14,12 +14,8 @@ const httpServer = http.createServer(app);
 // Configure CORS for Socket.io (allow Vite dev server)
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      'http://localhost:5173', 'http://127.0.0.1:5173',
-      'http://localhost:5174', 'http://127.0.0.1:5174',
-      'http://localhost:5175', 'http://127.0.0.1:5175',
-    ],
-    methods: ['GET', 'POST'],
+    origin: "*",
+    methods: ["GET", "POST"],
   },
 });
 
