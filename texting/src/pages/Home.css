@@ -282,9 +282,70 @@
 }
 
 /* Mobile */
-@media (max-width: 480px) {
-  .home-card { padding: 28px 20px; }
-  .code-text { font-size: 18px; }
-  .input-row { flex-direction: column; }
-  .btn-secondary { width: 100%; justify-content: center; }
+.home-container {
+  min-height: 100dvh;
 }
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 16px 12px;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+
+  .home-card {
+    padding: 28px 18px;
+    border-radius: 20px;
+  }
+
+  .home-title {
+    font-size: 24px;
+  }
+
+  .home-subtitle {
+    font-size: 13px;
+  }
+
+  .code-text {
+    font-size: 18px;
+    letter-spacing: 3px;
+  }
+
+  /* Prevent iOS zoom on focus (must be ≥ 16px) */
+  .code-input {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  /* Keep row layout but let button shrink neatly */
+  .input-row {
+    gap: 8px;
+  }
+
+  .btn-secondary {
+    white-space: nowrap;
+    padding: 12px 14px;
+  }
+}
+
+/* Very small screens — card goes nearly full-width */
+@media (max-width: 360px) {
+  .home-container {
+    padding: 16px 8px;
+    padding-top: 24px;
+  }
+
+  .home-card {
+    padding: 24px 14px;
+  }
+
+  .input-row {
+    flex-direction: column;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

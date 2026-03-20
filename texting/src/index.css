@@ -31,7 +31,16 @@ html, body, #root {
   background: var(--bg-deep);
   color: var(--text-1);
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+button, input, textarea, select {
+  touch-action: manipulation;
 }
 
 /* ===== Scrollbar ===== */

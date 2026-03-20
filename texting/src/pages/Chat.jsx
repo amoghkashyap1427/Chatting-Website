@@ -23,6 +23,7 @@ export default function Chat() {
 
   const messagesEndRef = useRef(null)
   const typingTimeoutRef = useRef(null)
+  const inputRef = useRef(null)
 
   // Auto-scroll
   useEffect(() => {
@@ -111,6 +112,8 @@ export default function Chat() {
     setInputValue('')
     s.emit('typing', { code: roomId, isTyping: false })
     clearTimeout(typingTimeoutRef.current)
+    // Re-focus input so mobile keyboard stays open
+    setTimeout(() => inputRef.current?.focus(), 0)
   }, [inputValue, roomId])
 
   const handleInputChange = (e) => {
@@ -228,6 +231,7 @@ export default function Chat() {
       <footer className="chat-footer">
         <div className="input-bar">
           <textarea
+            ref={inputRef}
             className="msg-input"
             placeholder={strangerOnline ? 'Type a message…' : 'Waiting for stranger…'}
             value={inputValue}

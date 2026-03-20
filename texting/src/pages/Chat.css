@@ -296,10 +296,118 @@
 }
 
 /* ===== Mobile ===== */
-@media (max-width: 600px) {
-  .chat-header { padding: 12px 14px; }
-  .chat-messages { padding: 14px 12px; }
-  .bubble { max-width: 85%; }
-  .leave-btn span { display: none; }
-  .footer-note { display: none; }
+
+/* Use dynamic viewport height so the layout fills exactly the visible area
+   even when the mobile browser's chrome (address bar) is showing */
+.chat-layout {
+  height: 100dvh;
 }
+
+@media (max-width: 600px) {
+  .chat-header {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .chat-header-left {
+    gap: 8px;
+    min-width: 0; /* allow text to shrink/truncate */
+  }
+
+  .avatar-circle {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+  }
+
+  .chat-header-info {
+    min-width: 0;
+  }
+
+  .chat-title {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chat-meta {
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .room-code-btn {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    padding: 2px 6px;
+  }
+
+  .status-text {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  /* Leave button — show only icon on small screens */
+  .leave-btn {
+    padding: 8px 10px;
+    font-size: 0; /* hide text */
+    gap: 0;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .leave-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .chat-messages {
+    padding: 12px 10px;
+  }
+
+  .bubble {
+    max-width: 85%;
+    font-size: 14px;
+  }
+
+  /* Input area */
+  .chat-footer {
+    padding: 10px 12px;
+    /* safe-area for iPhones with home indicator */
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  /* 16px prevents iOS from zooming in on focus */
+  .msg-input {
+    font-size: 16px;
+  }
+
+  .footer-note {
+    display: none;
+  }
+
+  .empty-state {
+    padding: 24px 16px;
+  }
+
+  .status-banner {
+    font-size: 12px;
+  }
+}
+
+/* Very small phones (≤ 360px) */
+@media (max-width: 360px) {
+  .chat-title {
+    font-size: 13px;
+  }
+
+  .room-code-btn {
+    letter-spacing: 1px;
+    font-size: 9px;
+  }
+
+  .bubble {
+    max-width: 90%;
+  }
+}
+
