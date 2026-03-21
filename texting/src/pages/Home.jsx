@@ -10,6 +10,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState('')
   const [isConnecting, setIsConnecting] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
   const [serverOnline, setServerOnline] = useState(false)
 
   useEffect(() => {
@@ -37,8 +38,10 @@ export default function Home() {
       return
     }
     setError('')
+    setIsGenerating(true)
     const s = getSocket()
     s.emit('create_room', {}, (res) => {
+      setIsGenerating(false)
       if (res?.success) {
         setGeneratedCode(res.code)
       } else {
@@ -114,9 +117,18 @@ export default function Home() {
         <div className="section">
           <h2 className="section-label">Start a new room</h2>
           {!generatedCode ? (
-            <button className="btn btn-primary" onClick={handleGenerate} disabled={!serverOnline}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-              Generate Code
+            <button className="btn btn-primary" onClick={handleGenerate} disabled={!serverOnline || isGenerating}>
+              {isGenerating ? (
+                <>
+                  <span className="btn-spinner" />
+                  Generating…
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                  Generate Code
+                </>
+              )}
             </button>
           ) : (
             <div className="code-display">
