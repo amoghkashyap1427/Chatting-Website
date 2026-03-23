@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 // Configure CORS for Socket.io (allow Vite dev server)
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173", "https://chatting-website-17.vercel.app"],
+    origin: ["http://localhost:5173", "https://chatting-website-27.vercel.app"],
     methods: ["GET", "POST"],
   },
 });
