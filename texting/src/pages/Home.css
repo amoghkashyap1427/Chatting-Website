@@ -302,18 +302,33 @@
 /* Mobile */
 .home-container {
   min-height: 100dvh;
+  /* safe-area for modern phones */
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 @media (max-width: 480px) {
   .home-container {
-    padding: 16px 12px;
+    padding: 16px 14px;
+    padding-top: max(28px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
     align-items: flex-start;
-    padding-top: 32px;
   }
 
   .home-card {
-    padding: 28px 18px;
+    padding: 28px 20px;
     border-radius: 20px;
+  }
+
+  .home-header {
+    margin-bottom: 24px;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
   }
 
   .home-title {
@@ -324,15 +339,39 @@
     font-size: 13px;
   }
 
+  /* Code display: stack vertically on small screens */
+  .code-display {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
   .code-text {
-    font-size: 18px;
+    font-size: 20px;
     letter-spacing: 3px;
+    flex: 1 0 100%;
+    text-align: center;
+  }
+
+  .btn-icon {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .btn-sm {
+    flex: 1;
+    justify-content: center;
   }
 
   /* Prevent iOS zoom on focus (must be ≥ 16px) */
   .code-input {
     font-size: 16px;
     letter-spacing: 2px;
+    padding: 14px 14px;
+  }
+
+  .btn {
+    padding: 13px 18px; /* bigger tap target on mobile */
   }
 
   /* Keep row layout but let button shrink neatly */
@@ -342,7 +381,7 @@
 
   .btn-secondary {
     white-space: nowrap;
-    padding: 12px 14px;
+    padding: 13px 14px;
   }
 }
 
@@ -350,7 +389,8 @@
 @media (max-width: 360px) {
   .home-container {
     padding: 16px 8px;
-    padding-top: 24px;
+    padding-top: 20px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
 
   .home-card {
@@ -364,6 +404,15 @@
   .btn-secondary {
     width: 100%;
     justify-content: center;
+  }
+
+  .code-display {
+    padding: 10px 12px;
+  }
+
+  .code-text {
+    font-size: 18px;
+    letter-spacing: 2px;
   }
 }
 

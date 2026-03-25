@@ -112,8 +112,8 @@ export default function Chat() {
     setInputValue('')
     s.emit('typing', { code: roomId, isTyping: false })
     clearTimeout(typingTimeoutRef.current)
-    // Re-focus input so mobile keyboard stays open
-    setTimeout(() => inputRef.current?.focus(), 0)
+    // Keep focus on input so the mobile keyboard never closes
+    inputRef.current?.focus()
   }, [inputValue, roomId])
 
   const handleInputChange = (e) => {
@@ -243,6 +243,7 @@ export default function Chat() {
           <button
             className="send-btn"
             onClick={handleSend}
+            onMouseDown={(e) => e.preventDefault()} // prevent textarea from losing focus
             disabled={!strangerOnline || !inputValue.trim()}
             title="Send"
           >
