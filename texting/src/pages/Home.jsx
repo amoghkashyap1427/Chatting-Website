@@ -12,14 +12,15 @@ export default function Home() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [serverOnline, setServerOnline] = useState(false)
+  const [isServerLoading, setIsServerLoading] = useState(true)
 
   useEffect(() => {
     const s = getSocket()
-    const onConnect = () => setServerOnline(true)
+    const onConnect = () => { setServerOnline(true); setIsServerLoading(false) }
     const onDisconnect = () => setServerOnline(false)
-    const onError = () => setServerOnline(false)
+    const onError = () => { setServerOnline(false); setIsServerLoading(false) }
 
-    if (s.connected) setServerOnline(true)
+    if (s.connected) { setServerOnline(true); setIsServerLoading(false) }
     s.on('connect', onConnect)
     s.on('disconnect', onDisconnect)
     s.on('connect_error', onError)
@@ -91,6 +92,18 @@ export default function Home() {
   }
 
   return (
+    <>
+    {isServerLoading && (
+      <div className="boot-overlay">
+        <div className="boot-spinner">
+          <div className="ring ring-1" />
+          <div className="ring ring-2" />
+          <div className="ring ring-3" />
+          <div className="boot-dot" />
+        </div>
+        <p className="boot-label">Connecting to server…</p>
+      </div>
+    )}
     <div className="home-container">
       <div className="orb orb-1" />
       <div className="orb orb-2" />
@@ -111,7 +124,12 @@ export default function Home() {
           </div>
           <h1 className="home-title">Anonymous Chat</h1>
           <p className="home-subtitle">Share the code!! and STARTT</p>
-          {!serverOnline && (<h1></h1>)}
+          {!serverOnline && !isServerLoading && (
+            <div className="server-warn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              Backend offline — start the server
+            </div>
+          )}
         </div>
 
         <div className="section">
@@ -185,5 +203,6 @@ export default function Home() {
         <p className="home-footer">No accounts. No logs. 100% anonymous.</p>
       </div>
     </div>
+    </>
   )
 }
