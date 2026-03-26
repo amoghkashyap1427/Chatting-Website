@@ -7,7 +7,10 @@ let socket = null
 
 export function getSocket() {
   if (!socket || socket.disconnected) {
-    socket = io(SERVER_URL, { autoConnect: true })
+    socket = io(SERVER_URL, { 
+      autoConnect: true,
+      transports: ['websocket', 'polling']
+    })
   }
   return socket
 }

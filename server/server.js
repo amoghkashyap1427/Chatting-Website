@@ -11,10 +11,10 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const httpServer = http.createServer(app);
 
-// Configure CORS for Socket.io (allow Vite dev server)
+// Configure CORS for Socket.io
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173", "https://chatting-website-27.vercel.app"],
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
