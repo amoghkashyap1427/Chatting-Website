@@ -20,6 +20,7 @@ export default function Chat() {
   const [isTyping, setIsTyping] = useState(false) // stranger typing
   const [mySocketId, setMySocketId] = useState(null)
   const [statusMsg, setStatusMsg] = useState('')
+  const [replyingTo, setReplyingTo] = useState(null)
 
   const messagesEndRef = useRef(null)
   const typingTimeoutRef = useRef(null)
@@ -59,13 +60,14 @@ export default function Chat() {
       addSystemMsg(message || 'Stranger left the chat.')
     }
 
-    const onReceiveMessage = ({ senderId, message, timestamp }) => {
+    const onReceiveMessage = ({ senderId, message, timestamp, replyTo }) => {
       setMessages(prev => [...prev, {
         id: Date.now() + Math.random(),
         type: 'message',
         text: message,
         mine: senderId === s.id,
         timestamp,
+        replyTo,
       }])
     }
 
@@ -108,13 +110,14 @@ export default function Chat() {
     const text = inputValue.trim()
     if (!text) return
     const s = getSocket()
-    s.emit('send_message', { code: roomId, message: text, timestamp: Date.now() })
+    s.emit('send_message', { code: roomId, message: text, timestamp: Date.now(), replyTo: replyingTo })
     setInputValue('')
+    setReplyingTo(null)
     s.emit('typing', { code: roomId, isTyping: false })
     clearTimeout(typingTimeoutRef.current)
     // Keep focus on input so the mobile keyboard never closes
     inputRef.current?.focus()
-  }, [inputValue, roomId])
+  }, [inputValue, roomId, replyingTo])
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value)
@@ -140,6 +143,51 @@ export default function Chat() {
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(roomId)
+  }
+
+  const scrollToMessage = (msgId) => {
+    const el = document.getElementById(`msg-${msgId}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('highlight-msg')
+      setTimeout(() => el.classList.remove('highlight-msg'), 1500)
+    }
+  }
+
+  const swipeDeltaRef = useRef(0)
+  const swipeStartRef = useRef(0)
+
+  const handleTouchStart = (e, msgId) => {
+    swipeStartRef.current = e.touches[0].clientX
+    swipeDeltaRef.current = 0
+    const el = document.getElementById(`msg-${msgId}`)
+    if (el) {
+      el.style.transition = 'none'
+    }
+  }
+
+  const handleTouchMove = (e, msgId) => {
+    const delta = e.touches[0].clientX - swipeStartRef.current
+    if (delta > 0 && delta < 80) { // Only swipe right up to 80px
+      swipeDeltaRef.current = delta
+      const el = document.getElementById(`msg-${msgId}`)
+      if (el) {
+        el.style.transform = `translateX(${delta}px)`
+      }
+    }
+  }
+
+  const handleTouchEnd = (e, msg) => {
+    const el = document.getElementById(`msg-${msg.id}`)
+    if (el) {
+      el.style.transition = 'transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+      el.style.transform = ''
+      if (swipeDeltaRef.current > 50) {
+        setReplyingTo(msg)
+      }
+    }
+    swipeStartRef.current = 0
+    swipeDeltaRef.current = 0
   }
 
   return (
@@ -204,11 +252,34 @@ export default function Chat() {
             )
           }
           return (
-            <div key={msg.id} className={`msg-wrapper ${msg.mine ? 'mine' : 'theirs'}`}>
+            <div 
+              key={msg.id} 
+              id={`msg-${msg.id}`}
+              className={`msg-wrapper ${msg.mine ? 'mine' : 'theirs'}`}
+              onTouchStart={(e) => handleTouchStart(e, msg.id)}
+              onTouchMove={(e) => handleTouchMove(e, msg.id)}
+              onTouchEnd={(e) => handleTouchEnd(e, msg)}
+            >
               <div className={`bubble ${msg.mine ? 'bubble-mine' : 'bubble-theirs'}`}>
+                {msg.replyTo && (
+                  <div className={`reply-quote ${msg.replyTo.mine ? 'quote-mine' : 'quote-theirs'}`} onClick={() => scrollToMessage(msg.replyTo.id)}>
+                    <div className="reply-quote-sender">{msg.replyTo.mine === msg.mine ? 'You' : 'Stranger'}</div>
+                    <div className="reply-quote-text">{msg.replyTo.text}</div>
+                  </div>
+                )}
                 <span className="bubble-text">{msg.text}</span>
                 <span className="bubble-time">{formatTime(msg.timestamp)}</span>
               </div>
+              <button 
+                className="reply-action-btn" 
+                title="Reply"
+                onClick={() => setReplyingTo(msg)}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 17 4 12 9 7"></polyline>
+                  <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+                </svg>
+              </button>
             </div>
           )
         })}
@@ -229,6 +300,19 @@ export default function Chat() {
 
       {/* Input bar */}
       <footer className="chat-footer">
+        {replyingTo && (
+          <div className="reply-preview-bar">
+            <div className="reply-preview-content">
+              <span className="reply-preview-title">Replying to {replyingTo.mine ? 'yourself' : 'stranger'}</span>
+              <p className="reply-preview-text">{replyingTo.text}</p>
+            </div>
+            <button className="reply-preview-close" onClick={() => setReplyingTo(null)}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        )}
         <div className="input-bar">
           <textarea
             ref={inputRef}

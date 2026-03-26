@@ -48,7 +48,7 @@ module.exports = function setupSocketHandlers(io) {
     });
 
     // Send a message to the room
-    socket.on('send_message', ({ code, message, timestamp }) => {
+    socket.on('send_message', ({ code, message, timestamp, replyTo }) => {
       const room = getRoom(code);
       if (!room) return;
       // Broadcast to ALL in room (sender gets it back via 'receive_message')
@@ -56,6 +56,7 @@ module.exports = function setupSocketHandlers(io) {
         senderId: socket.id,
         message,
         timestamp,
+        replyTo,
       });
       console.log(`[Msg] Room ${code}: ${message.substring(0, 40)}`);
     });
